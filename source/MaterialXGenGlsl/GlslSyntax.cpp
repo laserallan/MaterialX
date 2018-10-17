@@ -1,4 +1,5 @@
 #include <MaterialXGenGlsl/GlslSyntax.h>
+#include <MaterialXGenShader/Shader.h>
 
 #include <MaterialXGenShader/TypeDesc.h>
 
@@ -21,8 +22,39 @@ namespace
             return "0";
         }
     };
-}
 
+    class GlslFloatArrayTypeSyntax : public ScalarTypeSyntax
+    {
+    public:
+        GlslFloatArrayTypeSyntax(const string& name, const string& defaultValue, const string& uniformDefaultValue,
+            const string& typeDefStatement = EMPTY_STRING)
+            : ScalarTypeSyntax(name, defaultValue, uniformDefaultValue, typeDefStatement)
+        {}
+
+        string getValue(const Value& value, bool /*uniform*/) const override
+        {
+            vector<float> valueArray = value.asA<vector<float>>();
+            return "float[" + std::to_string(valueArray.size()) + "](" + value.getValueString() + ")";
+        }
+
+        string getValue(const vector<string>& values, bool uniform) const override
+        {
+            if (values.empty())
+            {
+                throw ExceptionShaderGenError("No values given to construct a value");
+            }
+
+            string result = uniform ? "{" : getName() + "(" + values[0];
+            for (size_t i = 1; i<values.size(); ++i)
+            {
+                result += ", " + values[i];
+            }
+            result += uniform ? "}" : ")";
+
+            return result;
+        }
+    };
+}
 
 const string GlslSyntax::OUTPUT_QUALIFIER = "out";
 const vector<string> GlslSyntax::VEC2_MEMBERS = { ".x", ".y" };
@@ -87,6 +119,16 @@ GlslSyntax::GlslSyntax()
             "float", 
             "0.0", 
             "0.0")
+    );
+
+    registerTypeSyntax
+    (
+        Type::FLOATARRAY,
+        std::make_shared<GlslFloatArrayTypeSyntax>(
+            "float",
+            "0",
+            "0"
+            )
     );
 
     registerTypeSyntax

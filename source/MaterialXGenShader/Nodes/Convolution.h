@@ -11,6 +11,9 @@ namespace MaterialX
 ///
 class Convolution : public SgImplementation
 {
+  public:
+     void createVariables(const SgNode& node, ShaderGenerator& shadergen, Shader& shader) override;
+
   protected:
     /// Constructor
     Convolution();

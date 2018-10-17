@@ -11,6 +11,14 @@ Convolution::Convolution()
 {
 }
 
+void Convolution::createVariables(const SgNode& /*node*/, ShaderGenerator& /*shadergen*/, Shader& shader)
+{
+    // Create global weights
+    vector<float> blah = { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f };
+    shader.createUniform(Shader::PIXEL_STAGE, Shader::PUBLIC_UNIFORMS, 
+        Type::FLOATARRAY, "u_boxfilter_weights", EMPTY_STRING, Value::createValue<vector<float>>(blah));
+}
+
 void Convolution::emitInputSamplesUV(const SgNode& node, SgNodeContext& context, ShaderGenerator& shadergen, Shader& shader, StringVec& sampleStrings)
 {
     sampleStrings.clear();

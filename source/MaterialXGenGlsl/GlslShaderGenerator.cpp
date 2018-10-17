@@ -733,13 +733,24 @@ void GlslShaderGenerator::emitUniform(const Shader::Variable& uniform, Shader& s
     else
     {
         const string& type = _syntax->getTypeName(uniform.type);
+
         string line = "uniform " + type + " " + uniform.name;
         if (uniform.semantic.length())
             line += " : " + uniform.semantic;
         if (uniform.value)
+        {
+            // Arrays need an array qualifier for the variable name
+            if (uniform.value->isA<vector<float>>())
+            {
+                vector<float> valueArray = uniform.value->asA<vector<float>>();
+                line += "[" + std::to_string(valueArray.size()) + "]";
+            }
             line += " = " + _syntax->getValue(uniform.type, *uniform.value, true);
+        }
         else
+        {
             line += " = " + _syntax->getDefaultValue(uniform.type, true);
+        }
         shader.addLine(line);
     }
 }
