@@ -412,7 +412,18 @@ void OgsFxShaderGenerator::emitUniform(const Shader::Variable& uniform, Shader& 
     {
         const string& type = _syntax->getTypeName(uniform.type);
         const string initStr = (uniform.value ? _syntax->getValue(uniform.type, *uniform.value, true) : _syntax->getDefaultValue(uniform.type, true));
-        shader.addLine("uniform " + type + " " + uniform.name + (initStr.empty() ? "" : " = " + initStr));
+
+        string line = "uniform " + type + " " + uniform.name;
+
+        // Arrays need an array qualifier for the variable name
+        if (uniform.value && uniform.value->isA<vector<float>>())
+        {
+            vector<float> valueArray = uniform.value->asA<vector<float>>();
+            line += "[" + std::to_string(valueArray.size()) + "]";
+        }
+        line += initStr.empty() ? "" : " = " + initStr;
+
+        shader.addLine(line);
     }
 }
 

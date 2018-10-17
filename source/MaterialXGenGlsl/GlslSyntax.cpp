@@ -37,22 +37,24 @@ namespace
             return "float[" + std::to_string(valueArray.size()) + "](" + value.getValueString() + ")";
         }
 
-        string getValue(const vector<string>& values, bool uniform) const override
+        string getValue(const vector<string>& values, bool /*uniform*/) const override
         {
             if (values.empty())
             {
                 throw ExceptionShaderGenError("No values given to construct a value");
             }
 
-            string result = uniform ? "{" : getName() + "(" + values[0];
+            string result = "float[" + std::to_string(values.size()) + "](" + values[0];
             for (size_t i = 1; i<values.size(); ++i)
             {
                 result += ", " + values[i];
             }
-            result += uniform ? "}" : ")";
+            result += ")";
 
             return result;
         }
+
+        // Need to add getDefaultValue()
     };
 }
 

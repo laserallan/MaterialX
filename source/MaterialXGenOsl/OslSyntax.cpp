@@ -9,6 +9,38 @@ namespace MaterialX
 
 namespace
 {
+    class OslFloatArrayTypeSyntax : public ScalarTypeSyntax
+    {
+    public:
+        OslFloatArrayTypeSyntax(const string& name, const string& defaultValue, const string& uniformDefaultValue,
+            const string& typeDefStatement = EMPTY_STRING)
+            : ScalarTypeSyntax(name, defaultValue, uniformDefaultValue, typeDefStatement)
+        {}
+
+        string getValue(const Value& value, bool /*uniform*/) const override
+        {
+            vector<float> valueArray = value.asA<vector<float>>();
+            return "{" + value.getValueString() + "}";
+        }
+
+        string getValue(const vector<string>& values, bool /*uniform*/) const override
+        {
+            if (values.empty())
+            {
+                throw ExceptionShaderGenError("No values given to construct a value");
+            }
+
+            string result = "{" + values[0];
+            for (size_t i = 1; i<values.size(); ++i)
+            {
+                result += ", " + values[i];
+            }
+            result += "}";
+
+            return result;
+        }
+    };
+
     // In OSL vector2, vector4, color2 and color4 are custom struct types and require a different 
     // value syntax for uniforms. So override the aggregate type syntax to support this.
     class OslStructTypeSyntax : public AggregateTypeSyntax
@@ -143,6 +175,16 @@ OslSyntax::OslSyntax()
             "float", 
             "0.0", 
             "0.0")
+    );
+
+    registerTypeSyntax
+    (
+        Type::FLOATARRAY,
+        std::make_shared<OslFloatArrayTypeSyntax>(
+            "float",
+            "0",
+            "0"
+            )
     );
 
     registerTypeSyntax
