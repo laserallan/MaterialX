@@ -380,7 +380,7 @@ static void runGLSLValidation(const std::string& shaderName, mx::ElementPtr elem
                               mx::GlslShaderGenerator& shaderGenerator, bool orthographicView, mx::DocumentPtr doc,
                               std::ostream& log, bool outputMtlxDoc=true, const std::string& outputPath=".")
 {
-    mx::SgOptions options;
+    mx::GenOptions options;
 
     if(element && doc)
     {
@@ -430,6 +430,11 @@ static void runGLSLValidation(const std::string& shaderName, mx::ElementPtr elem
             std::string fileName = shaderPath + ".exr";
             validator.save(fileName);
 
+            std::ofstream file;
+            file.open(shaderPath + ".frag");
+            file << shader->getSourceCode(mx::HwShader::PIXEL_STAGE);
+            file.close();
+
             validated = true;
         }
         catch (mx::ExceptionShaderValidationError e)
@@ -459,7 +464,7 @@ static void runOSLValidation(const std::string& shaderName, mx::TypedElementPtr 
                              mx::ArnoldShaderGenerator& shaderGenerator, mx::DocumentPtr doc, std::ostream& log,
                              bool outputMtlxDoc=true, const std::string& outputPath=".")
 {
-    mx::SgOptions options;
+    mx::GenOptions options;
 
     if(element && doc)
     {
@@ -612,6 +617,7 @@ TEST_CASE("MaterialX documents", "[shadervalid]")
     // which files in the test suite are being tested.
     // Add only the test suite filename not the full path.
     std::set<std::string> testfileOverride;
+    testfileOverride.insert("blur.mtlx");
 
     // Library search path
     mx::FilePath searchPath = mx::FilePath::getCurrentPath() / mx::FilePath("documents/Libraries");
@@ -683,6 +689,7 @@ TEST_CASE("MaterialX documents", "[shadervalid]")
 
             if (!materials.empty() || !nodeGraphs.empty() || !outputList.empty())
             {
+                std::cout << "Validating MTLX file: " << filename << std::endl;
 #ifdef MATERIALX_BUILD_GEN_GLSL
                 glslLog << "MTLX Filename: " << filename << std::endl;
 #endif
