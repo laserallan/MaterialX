@@ -9,25 +9,32 @@ namespace MaterialX
 
 namespace
 {
-    class OslFloatArrayTypeSyntax : public ScalarTypeSyntax
+    class OslArrayTypeSyntax : public ScalarTypeSyntax
     {
     public:
-        OslFloatArrayTypeSyntax(const string& name, const string& defaultValue, const string& uniformDefaultValue,
-            const string& typeDefStatement = EMPTY_STRING)
-            : ScalarTypeSyntax(name, defaultValue, uniformDefaultValue, typeDefStatement)
+        OslArrayTypeSyntax(const string& name)
+            : ScalarTypeSyntax(name, EMPTY_STRING, EMPTY_STRING, EMPTY_STRING)
         {}
 
-        string getValue(const Value& value, bool /*uniform*/) const override
+        string getValue(const Value& value, bool uniform) const override
         {
-            vector<float> valueArray = value.asA<vector<float>>();
-            return "{" + value.getValueString() + "}";
+            if (!isEmpty(value))
+            {
+                return "{" + value.getValueString() + "}";
+            }
+            // OSL disallows arrays without initialization when specified as input uniform
+            else if (uniform)
+            {
+                throw ExceptionShaderGenError("Uniform array cannot initialize to a empty value.");
+            }
+            return EMPTY_STRING;
         }
 
         string getValue(const vector<string>& values, bool /*uniform*/) const override
         {
             if (values.empty())
             {
-                throw ExceptionShaderGenError("No values given to construct a value");
+                throw ExceptionShaderGenError("No values given to construct an array value");
             }
 
             string result = "{" + values[0];
@@ -38,6 +45,39 @@ namespace
             result += "}";
 
             return result;
+        }
+       
+    protected:
+        virtual bool isEmpty(const Value& value) const = 0;
+    };
+
+    class OslFloatArrayTypeSyntax : public OslArrayTypeSyntax
+    {
+    public:
+        OslFloatArrayTypeSyntax(const string& name)
+            : OslArrayTypeSyntax(name)
+        {}
+
+    protected:
+        bool isEmpty(const Value& value) const override
+        {
+            vector<float> valueArray = value.asA<vector<float>>();
+            return valueArray.empty();
+        }
+    };
+
+    class OslIntegerArrayTypeSyntax : public OslArrayTypeSyntax
+    {
+    public:
+        OslIntegerArrayTypeSyntax(const string& name)
+            : OslArrayTypeSyntax(name)
+        {}
+
+    protected:
+        bool isEmpty(const Value& value) const override
+        {
+            vector<int> valueArray = value.asA<vector<int>>();
+            return valueArray.empty();
         }
     };
 
@@ -181,10 +221,7 @@ OslSyntax::OslSyntax()
     (
         Type::FLOATARRAY,
         std::make_shared<OslFloatArrayTypeSyntax>(
-            "float",
-            "0",
-            "0"
-            )
+            "float")
     );
 
     registerTypeSyntax
@@ -192,8 +229,15 @@ OslSyntax::OslSyntax()
         Type::INTEGER,
         std::make_shared<ScalarTypeSyntax>(
             "int", 
-            "0", 
-            "0")
+            EMPTY_STRING,
+            EMPTY_STRING)
+    );
+
+    registerTypeSyntax
+    (
+        Type::INTEGERARRAY,
+        std::make_shared<OslFloatArrayTypeSyntax>(
+            "int")
     );
 
     registerTypeSyntax

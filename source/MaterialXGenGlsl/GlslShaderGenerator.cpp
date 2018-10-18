@@ -739,12 +739,11 @@ void GlslShaderGenerator::emitUniform(const Shader::Variable& uniform, Shader& s
             line += " : " + uniform.semantic;
         if (uniform.value)
         {
-            // Arrays need an array qualifier for the variable name
-            if (uniform.value->isA<vector<float>>())
-            {
-                vector<float> valueArray = uniform.value->asA<vector<float>>();
-                line += "[" + std::to_string(valueArray.size()) + "]";
-            }
+            // If an arrays we need an array qualifier (suffix) for the variable name
+            string arraySuffix;
+            uniform.getArraySuffix(arraySuffix);
+            line += arraySuffix;
+
             line += " = " + _syntax->getValue(uniform.type, *uniform.value, true);
         }
         else

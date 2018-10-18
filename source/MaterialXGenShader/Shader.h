@@ -61,6 +61,24 @@ public:
             , semantic(s)
             , value(v)
         {}
+
+        void getArraySuffix(string& result) const
+        {
+            result.clear();
+            if (value && value->isA<vector<float>>())
+            {
+                if (value && value->isA<vector<float>>())
+                {
+                    vector<float> valueArray = value->asA<vector<float>>();
+                    result = "[" + std::to_string(valueArray.size()) + "]";
+                }
+                else if (value && value->isA<vector<int>>())
+                {
+                    vector<int> valueArray = value->asA<vector<int>>();
+                    result = "[" + std::to_string(valueArray.size()) + "]";
+                }
+            }
+        }
     };
 
     using VariablePtr = std::shared_ptr<Variable>;

@@ -66,6 +66,7 @@ namespace Type
     const TypeDesc* NONE               = TypeDesc::registerType("none", TypeDesc::BASETYPE_NONE, TypeDesc::SEMATIC_NONE, 1, false);
     const TypeDesc* BOOLEAN            = TypeDesc::registerType("boolean", TypeDesc::BASETYPE_BOOLEAN);
     const TypeDesc* INTEGER            = TypeDesc::registerType("integer", TypeDesc::BASETYPE_INTEGER);
+    const TypeDesc* INTEGERARRAY       = TypeDesc::registerType("integerarray", TypeDesc::BASETYPE_INTEGER);
     const TypeDesc* FLOAT              = TypeDesc::registerType("float", TypeDesc::BASETYPE_FLOAT);
     const TypeDesc* FLOATARRAY         = TypeDesc::registerType("floatarray", TypeDesc::BASETYPE_FLOAT);
     const TypeDesc* VECTOR2            = TypeDesc::registerType("vector2", TypeDesc::BASETYPE_FLOAT, TypeDesc::SEMATIC_VECTOR, 2, true, {{'x', 0}, {'y', 1}});

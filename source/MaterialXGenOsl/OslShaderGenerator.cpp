@@ -318,11 +318,12 @@ void OslShaderGenerator::emitUniform(const Shader::Variable& uniform, Shader& sh
 {
     const string initStr = (uniform.value ? _syntax->getValue(uniform.type, *uniform.value, true) : _syntax->getDefaultValue(uniform.type, true));
     string line = _syntax->getTypeName(uniform.type) + " " + uniform.name;
-    if (uniform.value && uniform.value->isA<vector<float>>())
-    {
-        vector<float> valueArray = uniform.value->asA<vector<float>>();
-        line += "[" + std::to_string(valueArray.size()) + "]";
-    }
+
+    // If an arrays we need an array qualifier (suffix) for the variable name
+    string arraySuffix;
+    uniform.getArraySuffix(arraySuffix);
+    line += arraySuffix;
+
     line += initStr.empty() ? "" : " = " + initStr;
     shader.addStr(line);
 }
