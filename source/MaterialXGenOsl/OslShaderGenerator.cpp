@@ -314,4 +314,17 @@ void OslShaderGenerator::emitFinalOutput(Shader& shader) const
     shader.addLine(outputSocket->name + " = " + finalResult);
 }
 
+void OslShaderGenerator::emitUniform(const Shader::Variable& uniform, Shader& shader)
+{
+    const string initStr = (uniform.value ? _syntax->getValue(uniform.type, *uniform.value, true) : _syntax->getDefaultValue(uniform.type, true));
+    string line = _syntax->getTypeName(uniform.type) + " " + uniform.name;
+    if (uniform.value && uniform.value->isA<vector<float>>())
+    {
+        vector<float> valueArray = uniform.value->asA<vector<float>>();
+        line += "[" + std::to_string(valueArray.size()) + "]";
+    }
+    line += initStr.empty() ? "" : " = " + initStr;
+    shader.addStr(line);
+}
+
 } // namespace MaterialX

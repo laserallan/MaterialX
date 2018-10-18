@@ -29,6 +29,9 @@ public:
     /// Emit the final output expression
     void emitFinalOutput(Shader& shader) const override;
 
+    /// Emit a shader uniform input variable
+    void emitUniform(const Shader::Variable& uniform, Shader& shader) override;
+
     /// Unique identifyer for the osl language
     static const string LANGUAGE;
 
