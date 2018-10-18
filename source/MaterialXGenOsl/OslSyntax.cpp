@@ -229,14 +229,14 @@ OslSyntax::OslSyntax()
         Type::INTEGER,
         std::make_shared<ScalarTypeSyntax>(
             "int", 
-            EMPTY_STRING,
-            EMPTY_STRING)
+            "0",
+            "0")
     );
 
     registerTypeSyntax
     (
         Type::INTEGERARRAY,
-        std::make_shared<OslFloatArrayTypeSyntax>(
+        std::make_shared<OslIntegerArrayTypeSyntax>(
             "int")
     );
 

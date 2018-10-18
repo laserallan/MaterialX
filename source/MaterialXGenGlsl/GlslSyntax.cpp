@@ -178,7 +178,7 @@ GlslSyntax::GlslSyntax()
     registerTypeSyntax
     (
         Type::INTEGERARRAY,
-        std::make_shared<GlslFloatArrayTypeSyntax>(
+        std::make_shared<GlslIntegerArrayTypeSyntax>(
             "int")
     );
 

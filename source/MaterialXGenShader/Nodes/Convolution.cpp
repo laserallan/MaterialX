@@ -17,6 +17,14 @@ void Convolution::createVariables(const ShaderNode& /*node*/, ShaderGenerator& /
     vector<float> blah = { 0.1f, 0.2f, 0.3f, 0.4f, 0.5f, 0.6f, 0.7f };
     shader.createUniform(Shader::PIXEL_STAGE, Shader::PUBLIC_UNIFORMS, 
         Type::FLOATARRAY, "u_boxfilter_weights", EMPTY_STRING, Value::createValue<vector<float>>(blah));
+
+    vector<int> iblah = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15,
+        1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14 ,15 };
+    shader.createUniform(Shader::PIXEL_STAGE, Shader::PUBLIC_UNIFORMS,
+        Type::INTEGERARRAY, "u_boxfilter_weights_i", EMPTY_STRING, Value::createValue<vector<int>>(iblah));
 }
 
 void Convolution::emitInputSamplesUV(const ShaderNode& node, GenContext& context, ShaderGenerator& shadergen, Shader& shader, StringVec& sampleStrings)
