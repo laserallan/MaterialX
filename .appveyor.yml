@@ -6,7 +6,7 @@ environment:
     - APPVEYOR_BUILD_WORKER_IMAGE: Visual Studio 2017
       GENERATOR: Visual Studio 15 2017
       ARCH: x64
-      PYTHON: C:\Python37-x64
+      PYTHON: C:\Python36-x64
 
 configuration:
   - Release
@@ -25,6 +25,6 @@ build_script:
   - cmake -E chdir ../python/MaterialXTest python genshader.py
 
 artifacts:
-  - path: build
+  - path: build/installed
     name: build
     type: zip
